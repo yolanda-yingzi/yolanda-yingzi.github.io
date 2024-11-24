@@ -1,14 +1,27 @@
+# _config.yml
 title: 我的日记本
 description: 记录生活的点点滴滴
-author: Your Name
-theme: minima
-permalink: /:year/:month/:day/:title/
-timezone: Asia/Shanghai
+author: YolandaYingzi
 
+# 重要：指定主题
+theme: minima
+baseurl: "/yolandayingzi.github.io"  # 这个很重要，要匹配你的仓库名
+url: "https://yolanda-yingzi.github.io"
+
+markdown: kramdown
 plugins:
   - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-paginate
+  - jekyll-seo-tag
 
+# 分页设置
 paginate: 10
 paginate_path: "/page:num/"
+
+# 默认布局
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
