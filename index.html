@@ -3,27 +3,20 @@ layout: default
 ---
 
 <div class="home">
-  {%- if site.posts.size > 0 -%}
-    <h2 class="post-list-heading">{{ page.list_title | default: "日记列表" }}</h2>
-    <ul class="post-list">
-      {%- for post in site.posts -%}
-      <li>
-        {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
-        <h3>
-          <a class="post-link" href="{{ post.url | relative_url }}">
-            {{ post.title | escape }}
-          </a>
-        </h3>
-        {%- if site.show_excerpts -%}
-          {{ post.excerpt }}
-        {%- endif -%}
-      </li>
-      {%- endfor -%}
-    </ul>
-  {%- endif -%}
+  <h1>日记列表</h1>
 
-  {%- if site.posts.size == 0 -%}
-    <p>还没有发布任何日记。</p>
-  {%- endif -%}
+  <div class="post-list">
+    {% for post in site.posts %}
+    <article class="post-item">
+      <h3>
+        <a href="{{ site.url }}{{ site.baseurl }}/posts/{{ post.title | downcase }}">
+          {{ post.title }}
+        </a>
+      </h3>
+      <time datetime="{{ post.date | date_to_xmlschema }}">
+        {{ post.date | date: "%Y-%m-%d" }}
+      </time>
+    </article>
+    {% endfor %}
+  </div>
 </div>
