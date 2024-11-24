@@ -1,0 +1,14 @@
+title: 我的日记本
+description: 记录生活的点点滴滴
+author: Your Name
+theme: minima
+permalink: /:year/:month/:day/:title/
+timezone: Asia/Shanghai
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-paginate
+
+paginate: 10
+paginate_path: "/page:num/"

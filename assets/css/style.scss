@@ -1,0 +1,60 @@
+---
+---
+
+@import "minima";
+
+// 自定义样式
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    
+    h1 {
+        margin: 0;
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+    }
+    
+    nav {
+        margin-top: 1rem;
+        a {
+            margin-right: 1rem;
+            color: #666;
+        }
+    }
+}
+
+.post {
+    margin-bottom: 3rem;
+    
+    &-header {
+        margin-bottom: 2rem;
+        
+        time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    }
+    
+    &-content {
+        font-size: 1.1rem;
+    }
+}
+
+footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-size: 0.9rem;
+}
