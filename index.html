@@ -1,25 +1,751 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yingzi QU - Social Data Scientist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<div class="home">
-  <h1 class="page-heading">日记列表</h1>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
 
-  <div class="post-list">
-    {% for post in site.posts %}
-    <article class="post-item">
-      <h2>
-        <a class="post-link" href="{{ post.url | relative_url }}">
-          {{ post.title }}
-        </a>
-      </h2>
-      <div class="post-meta">
-        {{ post.date | date: "%Y年%m月%d日" }}
-      </div>
-      <div class="post-excerpt">
-        {{ post.excerpt }}
-      </div>
-    </article>
-    {% endfor %}
-  </div>
-</div>
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(100, 200, 255, 0.5);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #64c8ff, #9d64ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #64c8ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #64c8ff, #9d64ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #64c8ff, #9d64ff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(100, 200, 255, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(157, 100, 255, 0.5)); }
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #64c8ff;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #64c8ff, #9d64ff);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #64c8ff;
+            border: 2px solid #64c8ff;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(100, 200, 255, 0.3);
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #64c8ff, #9d64ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Education & Experience Cards */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, #64c8ff, #9d64ff);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 3rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #64c8ff, #9d64ff);
+            box-shadow: 0 0 20px rgba(100, 200, 255, 0.5);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(100, 200, 255, 0.1);
+            border-color: rgba(100, 200, 255, 0.3);
+        }
+
+        .card h3 {
+            color: #64c8ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .card .period {
+            color: #9d64ff;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .card .location {
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-10px);
+            background: rgba(100, 200, 255, 0.1);
+        }
+
+        .skill-icon {
+            font-size: 3rem;
+            color: #64c8ff;
+            margin-bottom: 1rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(100, 200, 255, 0.2);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .project-icon {
+            font-size: 2rem;
+            color: #64c8ff;
+            margin-right: 1rem;
+        }
+
+        .award-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(100, 200, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            color: #64c8ff;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            color: #64c8ff;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <div class="nav-content">
+            <div class="logo">Yingzi QU</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Yingzi QU</h1>
+            <h2>Social Data Scientist & Research Innovator</h2>
+            <p>Bridging social science with cutting-edge data analytics to understand human behavior and drive policy innovation. Currently pursuing Master's in Social Data Science at University of Copenhagen.</p>
+            <div class="cta-buttons">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section fade-in" id="about">
+        <h2>About Me</h2>
+        <div class="card">
+            <p style="font-size: 1.1rem; line-height: 1.8; text-align: center;">
+                I'm a passionate social data scientist with expertise in quantitative research, policy analysis, and data visualization. 
+                My work focuses on understanding complex social phenomena through innovative data science methodologies, 
+                particularly in environmental policy, educational development, and social trust dynamics.
+            </p>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="section fade-in" id="education">
+        <h2>Education & Training</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Master of Social Data Science</h3>
+                    <div class="period">09/2023 – 06/2025</div>
+                    <div class="location">University of Copenhagen, Denmark</div>
+                    <p>Advanced studies in computational social science, machine learning applications in social research, and quantitative policy analysis.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Bachelor of Sociology</h3>
+                    <div class="period">09/2019 – 06/2023</div>
+                    <div class="location">Soochow University, China</div>
+                    <p>Comprehensive foundation in social theory, research methodology, and statistical analysis with focus on social dynamics and policy studies.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Humanity Training</h3>
+                    <div class="period">09/2020 – 09/2021</div>
+                    <div class="location">International Academy of Red Cross and Red Crescent</div>
+                    <p>Specialized training in humanitarian principles, crisis response, and community development strategies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section fade-in" id="projects">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-header">
+                    <i class="fas fa-leaf project-icon"></i>
+                    <h3>Environmental Policy & Social Trust Study</h3>
+                    <span class="award-badge">National 2nd Prize</span>
+                </div>
+                <div class="period">05/2021 – 01/2025</div>
+                <p><strong>Role:</strong> Team Leader</p>
+                <p>Longitudinal research analyzing stakeholder reactions to China's plastic ban policy. Developed multi-step research design identifying communication gaps in environmental governance and quantified consumer acceptance patterns.</p>
+                <div class="skill-tags">
+                    <span class="tag">Policy Analysis</span>
+                    <span class="tag">Survey Design</span>
+                    <span class="tag">Statistical Modeling</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-header">
+                    <i class="fas fa-graduation-cap project-icon"></i>
+                    <h3>Higher Education Impact Analysis</h3>
+                </div>
+                <div class="period">01/2022 – 05/2022</div>
+                <p>Comprehensive econometric study assessing how higher education expansion (2003-2019) influenced economic growth in Suzhou Industrial Park. Built lagged time-series models and delivered policy recommendations.</p>
+                <div class="skill-tags">
+                    <span class="tag">Econometrics</span>
+                    <span class="tag">Time Series</span>
+                    <span class="tag">Policy Brief</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="section fade-in" id="experience">
+        <h2>Professional Experience</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Internet Content Manager Intern</h3>
+                    <div class="period">01/2023 – 05/2023</div>
+                    <div class="location">Wuxi, China</div>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>Developed standardized content matrix across 8 application scenarios, integrating 200+ assets</li>
+                        <li>Built real-time monitoring system tracking DAU/MAU and CTR, improving engagement by 23%</li>
+                        <li>Increased 7-day follower retention from 65% to 82% through behavior analysis</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Online Education Data Analyst & Instructor</h3>
+                    <div class="period">09/2021 – 09/2022</div>
+                    <div class="location">Suzhou, China</div>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>Established quality control criteria, stabilizing audit pass rate below 35%</li>
+                        <li>Boosted high-quality content proportion by 25% through systematic evaluation</li>
+                        <li>Tracked user behavior metrics and reported actionable insights to leadership</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section fade-in" id="skills">
+        <h2>Skills & Expertise</h2>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <i class="fas fa-code skill-icon"></i>
+                <h3>Programming</h3>
+                <div class="skill-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">MATLAB</span>
+                    <span class="tag">SQL</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <i class="fas fa-brain skill-icon"></i>
+                <h3>Machine Learning</h3>
+                <div class="skill-tags">
+                    <span class="tag">Statistical Modeling</span>
+                    <span class="tag">Time Series</span>
+                    <span class="tag">Data Mining</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <i class="fas fa-chart-line skill-icon"></i>
+                <h3>Data Analysis</h3>
+                <div class="skill-tags">
+                    <span class="tag">BI Dashboards</span>
+                    <span class="tag">Visualization</span>
+                    <span class="tag">Econometrics</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <i class="fas fa-file-alt skill-icon"></i>
+                <h3>Research</h3>
+                <div class="skill-tags">
+                    <span class="tag">Policy Analysis</span>
+                    <span class="tag">Survey Design</span>
+                    <span class="tag">Academic Writing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section class="section fade-in">
+        <h2>Publications</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Stakeholder reactions to China's plastic ban: Communication gaps in climate governance</h3>
+                    <div class="period">2025</div>
+                    <p>Forthcoming research on environmental policy communication and stakeholder engagement.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="card">
+                    <h3>Linguistic polyphony in UN speeches on climate change: An analysis of implicit argumentation</h3>
+                    <div class="period">2023</div>
+                    <p>Analysis of rhetorical strategies and implicit arguments in international climate discourse.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section fade-in" id="contact">
+        <h2>Get In Touch</h2>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <i class="fas fa-envelope contact-icon"></i>
+                <h3>Email</h3>
+                <a href="mailto:shuiyunhaibei@gmail.com">shuiyunhaibei@gmail.com</a><br>
+                <a href="mailto:zvh763@alumni.ku.dk">zvh763@alumni.ku.dk</a>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone contact-icon"></i>
+                <h3>Phone</h3>
+                <a href="tel:+4552685603">(+45) 52685603</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-linkedin contact-icon"></i>
+                <h3>LinkedIn</h3>
+                <a href="https://www.linkedin.com/in/yingzi-qu-9a96062a2/" target="_blank">Connect with me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Yingzi QU. All rights reserved. | Social Data Scientist & Research Innovator</p>
+    </footer>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize particles
+        createParticles();
+
+        // Add typing effect to hero section
+        const heroText = document.querySelector('.hero h1');
+        const originalText = heroText.textContent;
+        heroText.textContent = '';
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < originalText.length) {
+                heroText.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
